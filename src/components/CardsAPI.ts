@@ -1,4 +1,4 @@
-import { IcardObj  } from '../types/index'
+import { IcardObj  } from './types/index'
 import { Api, ApiListResponse } from './base/api'
 
 
