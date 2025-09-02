@@ -1,71 +1,58 @@
-import { ICard, CategoryTranslate} from '../types/index';
-import { Component } from './Component';
+import { BaseCard } from './BaseCard';
+import { CategoryTranslate, ICardActions } from '../types';
 import { ensureElement } from '../utils/utils';
 
-interface ICardActions {
-	onClick: (event: MouseEvent) => void;
-}
-
-export class Card extends Component<ICard> {
-	protected _title: HTMLElement;
-	protected _image?: HTMLImageElement;
-	protected _price: HTMLElement;
-	protected _category?: HTMLElement;
-	protected _description?: HTMLElement;
-	protected _button?: HTMLButtonElement;
+export class Card extends BaseCard {
+	protected _image: HTMLImageElement;
+	protected _description: HTMLElement | null = null;
+	protected _button: HTMLButtonElement | null = null;
+	protected _category: HTMLElement;
 
 	constructor(
-		protected blockName: string,
+		blockName: string,
 		container: HTMLElement,
 		actions?: ICardActions
 	) {
-		super(container);
+		super(blockName, container);
+		this.initCardElements();
+		this.setupEvents(actions);
+	}
 
-		this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
+	protected initCardElements(): void {
 		this._image = ensureElement<HTMLImageElement>(
-			`.${blockName}__image`,
-			container
+			'.card__image',
+			this.container
 		);
-		this._price = ensureElement<HTMLImageElement>(
-			`.${blockName}__price`,
-			container
+		this._category = ensureElement<HTMLElement>(
+			'.card__category',
+			this.container
 		);
-		this._category = ensureElement<HTMLImageElement>(
-			`.${blockName}__category`,
-			container
-		);
-		this._button = container.querySelector(`.${blockName}__button`);
-		this._description = container.querySelector(`.${blockName}__description`);
 
-		if (actions?.onClick) {
-			if (this._button) {
-				this._button.addEventListener('click', actions.onClick);
-			} else {
-				container.addEventListener('click', actions.onClick);
-			}
+		// Опциональные элементы - если есть в шаблоне
+		try {
+			this._description = ensureElement<HTMLElement>(
+				'.card__text',
+				this.container
+			);
+		} catch {
+			this._description = null;
+		}
+
+		try {
+			this._button = ensureElement<HTMLButtonElement>(
+				'.card__button',
+				this.container
+			);
+		} catch {
+			this._button = null;
 		}
 	}
 
-	public setInBasket(value: boolean) {
-		return value
-			? this.setText(this._button, 'В корзину')
-			: this.setText(this._button, 'Купить');
-	}
-
-	set id(value: string) {
-		this.container.dataset.id = value;
-	}
-
-	get id(): string {
-		return this.container.dataset.id || '';
-	}
-
-	set title(value: string) {
-		this.setText(this._title, value);
-	}
-
-	get title(): string {
-		return this._title.textContent || '';
+	public setInBasket(value: boolean): void {
+		if (this._button) {
+			this.setText(this._button, value ? 'Удалить из корзины' : 'Купить');
+			this.setDisabled(this._button, false);
+		}
 	}
 
 	set image(value: string) {
@@ -73,13 +60,17 @@ export class Card extends Component<ICard> {
 	}
 
 	set category(value: string) {
-		if (this._category) {
-			this.setText(this._category, value);
-			this._category.className = CategoryTranslate.getCssClass(value);
-		}
+		this.setText(this._category, value);
+		this.toggleClass(
+			this._category,
+			CategoryTranslate.getCssClass(value),
+			true
+		);
 	}
 
 	set description(value: string | string[]) {
+		if (!this._description) return;
+
 		if (Array.isArray(value)) {
 			this._description.replaceWith(
 				...value.map((str) => {
@@ -90,6 +81,27 @@ export class Card extends Component<ICard> {
 			);
 		} else {
 			this.setText(this._description, value);
+		}
+	}
+
+	set price(value: number | null) {
+		super.price = value;
+
+		if (this._button) {
+			if (value === null || isNaN(value)) {
+				this.setDisabled(this._button, true);
+				this.setText(this._button, 'Недоступно');
+			}
+		}
+	}
+
+	private setupEvents(actions?: ICardActions): void {
+		if (actions?.onClick) {
+			if (this._button) {
+				this._button.addEventListener('click', actions.onClick);
+			} else {
+				this.container.addEventListener('click', actions.onClick);
+			}
 		}
 	}
 }

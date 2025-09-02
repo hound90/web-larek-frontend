@@ -1,13 +1,9 @@
-import { ensureElement } from "../utils/utils";
-import { Component } from "./Component";
-import { IEvents } from "./base/events";
+import { ensureElement } from '../utils/utils';
+import { Component } from './Component';
+import { IEvents } from './base/events';
+import { IPage } from '../types';
 
-
-interface IPage {
-	content: HTMLElement;
-}
-
-export class Page extends Component<IPage>{
+export class Page extends Component<IPage> {
 	protected _counter: HTMLElement;
 	protected _cards: HTMLElement;
 	protected _wrapper: HTMLElement;
@@ -16,12 +12,17 @@ export class Page extends Component<IPage>{
 	constructor(container: HTMLElement, protected events: IEvents) {
 		super(container);
 
-		this._counter = ensureElement<HTMLElement>('.modal__close', container);
+		this._counter = ensureElement<HTMLElement>(
+			'.header__basket-counter',
+			container
+		);
 		this._cards = ensureElement<HTMLElement>('.gallery', container);
-		this._wrapper = ensureElement<HTMLElement>('.modal__close', container);
-		this._basket = ensureElement<HTMLElement>('.modal__close', container);
+		this._wrapper = ensureElement<HTMLElement>('.page__wrapper', container);
+		this._basket = ensureElement<HTMLElement>('.header__basket', container);
 
-		this._basket.addEventListener('click', () => this.events.emit('basket:open'));
+		this._basket.addEventListener('click', () =>
+			this.events.emit('basket:open')
+		);
 	}
 
 	set counter(value: number) {

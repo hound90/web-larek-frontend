@@ -1,12 +1,7 @@
-import { ICard, IOrder, IOrderResult, } from '../types/index'
-import { Api, ApiListResponse } from './base/api'
+import { ICard, ICatalogAPI, IOrder, IOrderResult } from '../types';
+import { Api, ApiListResponse } from './base/api';
 
 
-export interface ICatalogAPI {
-	getCatalog: () => Promise<ICard[]>;
-	getProductItem: (id: string) => Promise<ICard>;
-	orderProduct: (order: IOrder) => Promise<IOrderResult>;
-}
 
 export class CardsAPI extends Api implements ICatalogAPI {
 	readonly cdn: string;

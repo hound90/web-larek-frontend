@@ -1,3 +1,9 @@
+export interface ICatalogAPI {
+	getCatalog: () => Promise<ICard[]>;
+	getProductItem: (id: string) => Promise<ICard>;
+	orderProduct: (order: IOrder) => Promise<IOrderResult>;
+}
+//=============================================
 enum CardCategory {
 	SOFT = 'soft',
 	HARD = 'hard',
@@ -14,15 +20,6 @@ const RusToEng = {
 	'дополнительное': CardCategory.ADDITIONAL
 } as const
 
-export interface ICard {
-	id:string
-	title:string
-	image:string
-	price:number | null
-	category:string
-	description?:string
-}
-
 export class CategoryTranslate {
 	// Преобразует русское название в английское для CSS
 	static toEnglish(rusCategory: string): CardCategory {
@@ -32,43 +29,73 @@ export class CategoryTranslate {
 	// Получает CSS класс
 	static getCssClass(rusCategory: string): string {
 		const engCategory = this.toEnglish(rusCategory)
-		return `card__category card__category_${engCategory}`
+		return `card__category_${engCategory}`
 	}
 }
-
-export interface IOrder extends IContact {
-	total: number
-	items: string[]
-	payment: string
-	address: string
+//=============================================
+export interface ICard {
+	id?:string
+	title:string
+	image?:string
+	price:number | null
+	category?:string
+	description?:string
 }
 
+export interface IPage {
+	content: HTMLElement;
+}
 
+export interface IFormState {
+	valid: boolean;
+	errors: string[];
+}
 
-export interface IbuyerObj {
+export interface IOrdersForm extends IState {
+	items: string[];
+	total: number;
+	address: string;
 	payment: 'card'|'cash'|''
-	email:string
-	phone:string
+	email: string;
+	phone: string;
+}
+//=============================================
+export interface IBasketView {
+	items: HTMLElement[];
+	total: number;
+	selected: string[];
+}
+
+export interface ICardBasketData {
+	id: string;
+	title: string;
+	price: number | null;
+	index: number;
+}
+//=============================================
+export interface IOrder extends IContact {
+	payment: 'card'|'cash'|''
+	items: string[];
 	address:string
+	total: number;
 }
 export interface IContact {
 	email: string
 	phone: string
 }
-export interface IBasket {
-	items: HTMLElement[]
-	total: number
-	selected: string[]
-}
-
-export interface IOrderForm extends ContactsError, OrderError{}
 
 export interface IOrderResult {
 	id: string
 	total: number;
 }
 
-export type OrderError = {
+export interface ISuccess {
+	total: number;
+}
+//=============================================
+export interface IErrorsForm extends ContactsError, FormError{}
+
+export type FormError = {
 	address?: string;
 	payment?: string;
 };
@@ -77,17 +104,24 @@ export type ContactsError = {
 	email?: string;
 	phone?: string;
 };
+//=============================================
 
-export interface IOrdersForm extends IState {
-	items: string[];
-	total: number;
-	address: string;
-	payment: string;
-	email: string;
-	phone: string;
+export interface IAppState {
+	catalog: ICard[];
+	basket: string[];
+	preview: string | null;
+	order: IOrder | null;
+}
+
+export interface ICardActions {
+	onClick: (event: MouseEvent) => void;
 }
 
 export interface IState {
 	validation: boolean;
 	errors: string[];
+}
+
+export interface IModalData {
+	content: HTMLElement;
 }

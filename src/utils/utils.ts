@@ -77,7 +77,9 @@ export function setElementData<T extends Record<string, unknown> | object>(el: H
         el.dataset[key] = String(data[key]);
     }
 }
-
+export function formatNumber(x: number, sep = ' ') {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+}
 /**
  * Получает типизированные данные из dataset атрибутов элемента
  */
