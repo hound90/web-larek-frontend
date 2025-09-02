@@ -116,7 +116,7 @@ events.on('basket:changed', () => {
 
 	page.counter = appState.order.items.length;
 	basket.total = appState.total();
-	basket.selected = appState.order.items;
+	basket.selected = appState.order.items.length > 0;
 });
 
 events.on('basket:open', () => {
@@ -131,7 +131,7 @@ events.on('order:open', () => {
 			address: appState.order.address || '',
 			payment: appState.order.payment || '',
 			valid: appState.isFilledFieldsOrder(),
-			errors: []
+			errors: Object.values(appState.formContactsErrors).filter(error => error) as string[],
 		})
 	});
 });
@@ -154,7 +154,7 @@ events.on('contacts:open', () => {
 			email: appState.order.email,
 			phone: appState.order.phone,
 			valid: appState.isFilledFieldsContacts(),
-			errors: [],
+			errors: Object.values(appState.formContactsErrors).filter(error => error) as string[],
 		}),
 	});
 });

@@ -405,7 +405,7 @@ ADDITIONAL = 'additional' // Дополнительное
 `interface IBasketView {
 items: HTMLElement[];    // Массив DOM-элементов товаров
 total: number;           // Общая сумма заказа
-selected: string[];      // Массив ID выбранных товаров
+selected: boolean;       // Наличия товаров в корзине
 }`
 
 Интерфейс: ICardBasketData : Описывает структуру данных для карточки товара в корзине.

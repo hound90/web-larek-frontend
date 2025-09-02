@@ -1,11 +1,4 @@
-import {
-	ContactsError,
-	FormError,
-	IAppState,
-	ICard,
-	IErrorsForm,
-	IOrder,
-} from '../types';
+import { ContactsError, FormError, IAppState, ICard, IErrorsForm, IOrder, } from '../types';
 import { Model } from './base/Model';
 
 export class AppState extends Model<IAppState> {
@@ -35,7 +28,7 @@ export class AppState extends Model<IAppState> {
 	clearBasket() {
 		this.order.items.forEach((id) => this.toggleOrderItem(id, false));
 		this.clearOrderFields();
-		this.events.emit('basket:changed', { order: this.order });
+		this.events.emit('basket:changed');
 	}
 
 	total() {

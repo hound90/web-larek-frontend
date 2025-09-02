@@ -63,7 +63,7 @@ export interface IOrdersForm extends IState {
 export interface IBasketView {
 	items: HTMLElement[];
 	total: number;
-	selected: string[];
+	selected: boolean;
 }
 
 export interface ICardBasketData {

@@ -38,12 +38,8 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	set selected(items: string[]) {
-		if (items.length) {
-			this.setDisabled(this._button, false);
-		} else {
-			this.setDisabled(this._button, true);
-		}
+	set selected(enable: boolean) {
+		this.setDisabled(this._button, !enable);
 	}
 
 	set total(total: number) {
